@@ -1,9 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class GameController : MonoBehaviour {
-	public float[] distances;
-
+public class GameMenuController : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
@@ -13,5 +11,9 @@ public class GameController : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 	
+	}
+
+	public void OnStoryOKPress()	{
+
 	}
 }

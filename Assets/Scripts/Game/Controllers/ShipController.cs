@@ -1,8 +1,11 @@
 ﻿using UnityEngine;
+using UnityEngine.UI;
 using System.Collections;
 
 public class ShipController : MonoBehaviour {
 	public ShipMove ship;
+
+	public Slider healthBar;
 
 	// Use this for initialization
 	void Start () {
