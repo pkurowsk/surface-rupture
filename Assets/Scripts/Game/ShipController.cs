@@ -11,6 +11,7 @@ public class ShipController : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
+		// Turn
 		if (Input.GetKey (KeyCode.A)) {
 			ship.TiltSideWays(1);
 		}
@@ -19,6 +20,7 @@ public class ShipController : MonoBehaviour {
 			ship.TiltSideWays(-1);
 		}
 
+		// Move between layers
 		if (Input.GetKey (KeyCode.I) || Input.GetAxis("Mouse ScrollWheel") < 0) {
 			ship.LayerUp();
 		}
@@ -26,7 +28,11 @@ public class ShipController : MonoBehaviour {
 			ship.LayerDown();
 		}
 
-		if (Input.GetKey (KeyCode.S)) {
+		// Control ship speed
+		if (Input.GetKey (KeyCode.W)) {
+			ship.Accelerate();
+		}
+		else if (Input.GetKey (KeyCode.S)) {
 			ship.Brake();
 		}
 		else {

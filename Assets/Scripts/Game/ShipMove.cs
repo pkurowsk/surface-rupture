@@ -5,8 +5,9 @@ public class ShipMove : MonoBehaviour {
 	public Transform planet;
 
 	[Range(0, 100f)]
-	public float maxSpeed = 40f;
-
+	public float maxSpeed = 80f;
+	[Range(0, 100f)]
+	public float normSpeed = 40f;
 	[Range(0, 100f)]
 	public float brakeSpeed = 20f;
 
@@ -41,6 +42,10 @@ public class ShipMove : MonoBehaviour {
 		}
 	}
 
+	public void Accelerate()	{
+		moveSpeed = maxSpeed;
+	}
+
 	public void Brake()	{
 		moveSpeed = brakeSpeed;
 	}
@@ -62,7 +67,7 @@ public class ShipMove : MonoBehaviour {
 	}
 
 	public void NormalSpeed()	{
-		moveSpeed = maxSpeed;
+		moveSpeed = normSpeed;
 	}
 
 	public void TiltSideWays(int direction)	{
