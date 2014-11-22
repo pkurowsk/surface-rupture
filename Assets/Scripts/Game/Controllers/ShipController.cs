@@ -14,6 +14,14 @@ public class ShipController : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
+		// Shoot
+		if (Input.GetMouseButton (0)) {
+			ship.FireH();
+		} 
+		else if (Input.GetMouseButton (1)) {
+			ship.FireV();
+		}
+
 		// Turn
 		if (Input.GetKey (KeyCode.A)) {
 			ship.TiltSideWays(1);

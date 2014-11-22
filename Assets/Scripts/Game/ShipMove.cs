@@ -4,6 +4,9 @@ using System.Collections;
 public class ShipMove : MonoBehaviour {
 	public Transform planet;
 
+	public GameObject hBlast;
+	public GameObject vBlast;
+
 	[Range(0, 100f)]
 	public float maxSpeed = 80f;
 	[Range(0, 100f)]
@@ -22,15 +25,24 @@ public class ShipMove : MonoBehaviour {
 	public int targetLayer = 0;
 
 	bool isLerping = false;
+
 	Vector3 targetPosition;
+
+	float lastShot;
+
+	float fireRate = 0.15f;
 
 	// Use this for initialization
 	void Start () {
 		gameController = GameObject.FindGameObjectWithTag("GameController").GetComponent<GameController>();
+		lastShot = Time.time;
 	}
 	
 	// Update is called once per frame
 	void FixedUpdate () {
+		if (gameController.GetGameState () != GameController.GameStates.PLAYING)
+						return;
+
 		transform.RotateAround(planet.position, transform.right, Time.fixedDeltaTime * moveSpeed);
 
 		if (isLerping) {
@@ -48,6 +60,22 @@ public class ShipMove : MonoBehaviour {
 
 	public void Brake()	{
 		moveSpeed = brakeSpeed;
+	}
+
+	public void FireH()	{
+		if (Time.time - lastShot > fireRate) {
+			lastShot = Time.time;
+
+			Instantiate(hBlast, transform.position + transform.up * 2f, transform.rotation);
+		}
+	}
+
+	public void FireV()	{
+		if (Time.time - lastShot > fireRate) {
+			lastShot = Time.time;
+			
+			Instantiate(vBlast, transform.position + transform.up * 2f, transform.rotation) ;
+		}
 	}
 
 	public void LayerDown()	{

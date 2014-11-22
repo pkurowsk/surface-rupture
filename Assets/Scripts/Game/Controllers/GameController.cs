@@ -3,7 +3,7 @@ using UnityEngine.UI;
 using System.Collections;
 
 public class GameController : MonoBehaviour {
-	enum GameStates	{
+	public enum GameStates	{
 		PLAYING,
 		PAUSED,
 		INTRO,
@@ -22,6 +22,12 @@ public class GameController : MonoBehaviour {
 
 	GameStates gameState;
 
+	// The current wave that the player is on
+	int wave = 0;
+
+	// The number of waves it takes to get power ups
+	const int waveBreak = 10;
+
 	// Use this for initialization
 	void Start () {
 		gameState = GameStates.INTRO;
@@ -36,6 +42,19 @@ public class GameController : MonoBehaviour {
 	/// Ends the game.
 	/// </summary>
 	public void GameOver()	{
+
+	}
+
+	public GameStates GetGameState()	{
+		return gameState;
+	}
+
+	public void NextWave()	{
+		if (wave % waveBreak == 0)
+			Debug.Log("HELP");
+
+		wave++;
+		
 
 	}
 
