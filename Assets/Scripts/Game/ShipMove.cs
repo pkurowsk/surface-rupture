@@ -17,7 +17,7 @@ public class ShipMove : MonoBehaviour {
 	[Range(0, 100f)]
 	public float moveSpeed = 40f;
 
-	[Range(0, 300f)]
+	[Range(0, 1000f)]
 	public float turnSpeed = 200f;
 
 	public GameController gameController;
@@ -62,24 +62,35 @@ public class ShipMove : MonoBehaviour {
 		moveSpeed = brakeSpeed;
 	}
 
-	public void FireH()	{
-		if (Time.time - lastShot > fireRate) {
+	Quaternion GetFireAngle(float x, float y)	{
+		y -= Screen.height / 2;
+		x -= Screen.width / 2;
+
+		float angle = Mathf.Atan2 (y, x) / Mathf.PI * 180f - 90f;
+
+		Quaternion angleVec = Quaternion.AngleAxis (angle, transform.forward) * transform.rotation;
+
+		return angleVec;
+	}
+
+	public void FireH(float x, float y)	{
+		if (Time.time - lastShot > fireRate && gameController.GetGameState() == GameController.GameStates.PLAYING) {
 			lastShot = Time.time;
 
-			Instantiate(hBlast, transform.position + transform.up * 2f, transform.rotation);
+			Instantiate(hBlast, transform.position, GetFireAngle(x, y));
 		}
 	}
 
-	public void FireV()	{
-		if (Time.time - lastShot > fireRate) {
+	public void FireV(float x, float y)	{
+		if (Time.time - lastShot > fireRate && gameController.GetGameState() == GameController.GameStates.PLAYING) {
 			lastShot = Time.time;
-			
-			Instantiate(vBlast, transform.position + transform.up * 2f, transform.rotation) ;
+					
+			Instantiate(vBlast, transform.position, GetFireAngle(x, y));
 		}
 	}
 
 	public void LayerDown()	{
-		if (isLerping)
+		if (isLerping || gameController.GetGameState() != GameController.GameStates.PLAYING)
 			return;
 		
 		targetLayer = targetLayer <= 0 ? 0 : targetLayer - 1;
@@ -87,7 +98,7 @@ public class ShipMove : MonoBehaviour {
 	}
 
 	public void LayerUp()	{
-		if (isLerping)
+		if (isLerping || gameController.GetGameState() != GameController.GameStates.PLAYING)
 			return;
 
 		targetLayer = targetLayer >= 2 ? 2 : targetLayer + 1;
@@ -99,7 +110,8 @@ public class ShipMove : MonoBehaviour {
 	}
 
 	public void TiltSideWays(int direction)	{
-		transform.RotateAround (transform.position, transform.forward, Time.fixedDeltaTime * turnSpeed * direction);
+		if (gameController.GetGameState() == GameController.GameStates.PLAYING)
+			transform.RotateAround (transform.position, transform.forward, Time.fixedDeltaTime * turnSpeed * direction);
 	}
 
 

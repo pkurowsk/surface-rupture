@@ -16,10 +16,10 @@ public class ShipController : MonoBehaviour {
 	void Update () {
 		// Shoot
 		if (Input.GetMouseButton (0)) {
-			ship.FireH();
+			ship.FireH(Input.mousePosition.x, Input.mousePosition.y);
 		} 
 		else if (Input.GetMouseButton (1)) {
-			ship.FireV();
+			ship.FireV(Input.mousePosition.x, Input.mousePosition.y);
 		}
 
 		// Turn
