@@ -10,6 +10,8 @@ public class MainMenuController : MonoBehaviour {
 
 	bool isTransition = false;
 
+	public Animator shipAnim;
+
 	// Use this for initialization
 	void Start () {
 		targetMain = new Vector3 (-levelSelect.position.x, 0, 0);
@@ -32,14 +34,15 @@ public class MainMenuController : MonoBehaviour {
 	}
 
 	public void OnBackPress()	{
+		shipAnim.Play ("ShipFlyLeft");
 		isTransition = true;
 
-		
 		targetLvlSel = new Vector3(-main.position.x, 0, 0);
 		targetMain = Vector3.zero;
 	}
 
 	public void OnLevelSelectPress()	{
+		shipAnim.Play ("ShipFlyRight");
 		isTransition = true;
 
 		targetMain = new Vector3 (-levelSelect.position.x, 0, 0);
