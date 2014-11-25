@@ -21,7 +21,9 @@ public class Landmark : MonoBehaviour {
 	}
 
 	void OnTriggerEnter(Collider c)	{
-		Debug.Log ("Hit");
+		if (c.tag.Equals ("EBlast")) {
+			Debug.Log ("Hit");
+		}
 	}
 
 }

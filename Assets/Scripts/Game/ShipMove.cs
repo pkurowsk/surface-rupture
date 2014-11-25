@@ -109,6 +109,12 @@ public class ShipMove : MonoBehaviour {
 		moveSpeed = normSpeed;
 	}
 
+	void OnTriggerEnter(Collider c)	{
+		if (c.tag.Equals ("EBlast")) {
+
+		}
+	}
+
 	public void TiltSideWays(int direction)	{
 		if (gameController.GetGameState() == GameController.GameStates.PLAYING)
 			transform.RotateAround (transform.position, transform.forward, Time.fixedDeltaTime * turnSpeed * direction);

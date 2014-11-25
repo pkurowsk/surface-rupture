@@ -12,7 +12,7 @@ public class MainMenuController : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-		targetMain = new Vector3 (-700, 0, 0);
+		targetMain = new Vector3 (-levelSelect.position.x, 0, 0);
 		targetLvlSel = Vector3.zero;
 	}
 	
@@ -34,14 +34,15 @@ public class MainMenuController : MonoBehaviour {
 	public void OnBackPress()	{
 		isTransition = true;
 
+		
+		targetLvlSel = new Vector3(-main.position.x, 0, 0);
 		targetMain = Vector3.zero;
-		targetLvlSel = new Vector3(700, 0, 0);
 	}
 
 	public void OnLevelSelectPress()	{
 		isTransition = true;
 
-		targetMain = new Vector3 (-700, 0, 0);
+		targetMain = new Vector3 (-levelSelect.position.x, 0, 0);
 		targetLvlSel = Vector3.zero;
 	}
 
