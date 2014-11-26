@@ -3,6 +3,12 @@ using UnityEngine.UI;
 using System.Collections;
 
 public class GameController : MonoBehaviour {
+	public enum LandmarkType	{
+		Military,
+		Spiritual,
+		Economic
+	};
+
 	public enum GameStates	{
 		PLAYING,
 		PAUSED,
@@ -13,12 +19,17 @@ public class GameController : MonoBehaviour {
 	public GameObject gameHUD;
 	public GameObject storyUI;
 	public GameObject pauseUI;
+	public Transform miniMap;
 
 	public float[] distances;
 
 	public Slider moraleBar;
 
 	public Transform landmarks;
+
+	public LandmarkType[] planetRanking;
+
+	public EnemySpawner[] eSpawners;
 
 	GameStates gameState;
 
@@ -38,6 +49,15 @@ public class GameController : MonoBehaviour {
 		
 	}
 
+	public void AddToMiniMap(Transform icon)	{
+		icon.SetParent (miniMap);
+	}
+
+	IEnumerator FirstWave()	{
+		yield return new WaitForSeconds (2f);
+		NextWave ();
+	}
+
 	/// <summary>
 	/// Ends the game.
 	/// </summary>
@@ -50,12 +70,32 @@ public class GameController : MonoBehaviour {
 	}
 
 	public void NextWave()	{
-		if (wave % waveBreak == 0)
-			Debug.Log("HELP");
+		if (wave % waveBreak == 0 && wave != 0) {
+			HelpWave();
+		}
 
 		wave++;
-		
 
+		for (int i = 0; i < eSpawners.Length; i++) {
+			eSpawners[i].spawnWave(wave);
+		}
+
+	}
+
+	public void LandmarkTierDown(LandmarkType type)	{
+		if (planetRanking [0] == type) {
+			moraleBar.value = moraleBar.value - 40f;
+		}
+		else if (planetRanking [1] == type) {
+			moraleBar.value = moraleBar.value - 20f;
+		}
+		else if (planetRanking [2] == type) {
+			moraleBar.value = moraleBar.value - 10f;
+		}
+	}
+
+	void HelpWave()	{
+		Debug.Log ("Help");
 	}
 
 	/// <summary>
@@ -66,5 +106,7 @@ public class GameController : MonoBehaviour {
 
 		storyUI.SetActive (false);
 		gameHUD.SetActive (true);
+
+		StartCoroutine (FirstWave ());
 	}
 }

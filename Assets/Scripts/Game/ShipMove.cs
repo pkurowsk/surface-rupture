@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.UI;
 using System.Collections;
 
 public class ShipMove : MonoBehaviour {
@@ -24,6 +25,8 @@ public class ShipMove : MonoBehaviour {
 
 	public int targetLayer = 0;
 
+	public RectTransform shipMapIcon;
+
 	bool isLerping = false;
 
 	Vector3 targetPosition;
@@ -41,7 +44,7 @@ public class ShipMove : MonoBehaviour {
 	// Update is called once per frame
 	void FixedUpdate () {
 		if (gameController.GetGameState () != GameController.GameStates.PLAYING)
-						return;
+			return;
 
 		transform.RotateAround(planet.position, transform.right, Time.fixedDeltaTime * moveSpeed);
 
@@ -52,6 +55,8 @@ public class ShipMove : MonoBehaviour {
 			if (Vector3.Distance(transform.position, targetPosition) <= 0.1f)
 				isLerping = false;
 		}
+
+		UpdateMapIcon ();
 	}
 
 	public void Accelerate()	{
@@ -118,6 +123,23 @@ public class ShipMove : MonoBehaviour {
 	public void TiltSideWays(int direction)	{
 		if (gameController.GetGameState() == GameController.GameStates.PLAYING)
 			transform.RotateAround (transform.position, transform.forward, Time.fixedDeltaTime * turnSpeed * direction);
+	}
+
+	void UpdateMapIcon()	{
+		if (shipMapIcon == null)
+			return;
+
+		float theta = Mathf.Acos (transform.position.z / transform.position.magnitude);
+		float phi = Mathf.Atan2 (transform.position.y, transform.position.x);
+
+		float x = 25 * Mathf.Sin (theta) * Mathf.Cos (phi);
+		float y = 25 * Mathf.Sin (theta) * Mathf.Sin (phi) + 25;
+
+		if (transform.position.z > 0) {
+			y = -y;
+		}
+
+		shipMapIcon.localPosition = new Vector3 (x, y, shipMapIcon.localPosition.z);
 	}
 
 

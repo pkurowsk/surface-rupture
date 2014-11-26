@@ -13,15 +13,14 @@ public class Enemy : MonoBehaviour {
 
 	float lastShot;
 	
-	float fireRate = 0.2f;
+	const float fireRate = 0.2f;
 
-	float attackDist = 20f;
+	const float attackDist = 20f;
 
 	int health = 2;
 
 	// Use this for initialization
 	void Start () {
-		GetTarget ();
 		lastShot = Time.time;
 	}
 	
@@ -29,12 +28,11 @@ public class Enemy : MonoBehaviour {
 	void FixedUpdate () {
 		float dot = Vector3.Dot (-transform.right, target.position - transform.position);
 
-		if (Mathf.Abs (dot) > 0.01f) {
-			if (dot < 0)
-				ship.TiltSideWays (1);
-			else if (dot > 0)
-				ship.TiltSideWays (-1);
-		}
+		if (dot < 0)
+			ship.TiltSideWays (1);
+		else if (dot > 0)
+			ship.TiltSideWays (-1);
+
 
 		if (Vector3.Distance (transform.position, target.position) < attackDist)
 			Fire ();
@@ -50,16 +48,14 @@ public class Enemy : MonoBehaviour {
 		}
 	}
 
-	void GetTarget()	{
+	public void SetTarget()	{
 
 	}
 
 	void OnTriggerEnter(Collider c)	{
 		if (c.tag.Equals ("PBlast")) {
-			Debug.Log ("OW FUAARK");
 			health--;
 			if (health == 0)	{
-				Debug.Log ("lol dead");
 				Destroy(gameObject);
 			}
 
