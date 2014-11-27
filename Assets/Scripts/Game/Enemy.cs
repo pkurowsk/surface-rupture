@@ -2,6 +2,8 @@
 using System.Collections;
 
 public class Enemy : MonoBehaviour {
+
+
 	public Transform target;
 
 	public ShipMove ship;
@@ -23,11 +25,11 @@ public class Enemy : MonoBehaviour {
 	
 	// Update is called once per frame
 	void FixedUpdate () {
-		if (target == null)
-			target = GameControllerSingleton.GetInstance().FindTarget(transform.position);
-		if (target == null)
-			return;
+		if (target == null) {
+			target = GameControllerSingleton.GetInstance ().FindTarget (transform.position);
+		}
 
+		// Moving
 		float dot = Vector3.Dot(transform.right, transform.position - target.position);
 		if (dot > 0.1) {
 			ship.TiltSideWays (-1);
@@ -36,7 +38,22 @@ public class Enemy : MonoBehaviour {
 			ship.TiltSideWays (1);
 		}
 
-		if (Vector3.Distance (transform.position, target.position) < attackDist) {
+		// Actions
+		if (Vector3.Distance (GameControllerSingleton.GetInstance ().player.position, transform.position) <= attackDist * 2) {
+			if (Vector3.Dot(transform.right, GameControllerSingleton.GetInstance().player.right) > 0)
+				target = GameControllerSingleton.GetInstance().oppositePlayer;
+			else
+				target = GameControllerSingleton.GetInstance().player;
+
+			ship.Accelerate();
+		}
+		else {
+			ship.NormalSpeed();
+			if (target == GameControllerSingleton.GetInstance().oppositePlayer)
+				target = GameControllerSingleton.GetInstance().FindTarget(transform.position);
+		}
+
+		if (Vector3.Distance (transform.position, target.position) <= attackDist) {
 			Fire ();
 			ship.Brake ();
 		}
@@ -66,8 +83,11 @@ public class Enemy : MonoBehaviour {
 
 	void OnTriggerEnter(Collider c)	{
 		if (c.tag.Equals ("PBlast")) {
+			GameControllerSingleton.GetInstance().IncShotsHits();
 			health--;
 			if (health == 0)	{
+				if (ship.shipMapIcon != null)
+					Destroy(ship.shipMapIcon.gameObject);
 				Destroy(gameObject);
 			}
 

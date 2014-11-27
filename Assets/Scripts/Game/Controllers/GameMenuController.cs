@@ -11,54 +11,69 @@ public class GameMenuController : MonoBehaviour {
 	public RectTransform gspr;
 	public RectTransform geco;
 
+	// Formated Game HUD
+	public RectTransform healthSlider;
+	public RectTransform moraleSlider;
+	public RectTransform miniMap;
+	public RectTransform gameFeed;
+	public RectTransform waveText;
+
 	Vector3 startPos = Vector3.zero;
 
-	// Update is called once per frame
-	void Update () {
-	
+	void Start () {
+		healthSlider.position = new Vector3 (healthSlider.position.x, Screen.height - healthSlider.rect.height / 2, healthSlider.position.z);
+		moraleSlider.position = new Vector3 (Screen.width - moraleSlider.rect.width / 2 - 30f, moraleSlider.position.y, moraleSlider.position.z);
+		miniMap.position = new Vector3(30, Screen.height - miniMap.rect.height / 2, miniMap.position.z);
 	}
 
 	public void OnDrag(RectTransform rTrans)	{
 		float y = Input.mousePosition.y;
 
-		if (y > 212 + 77.5f)	
-			y = 212 + 77.5f;
-		else if(y < 212 - 77.5f)
-			y = 212 - 77.5f;
+		if (y > rTrans.parent.parent.parent.transform.position.y + 77.5f)	
+				y = 77.5f;
+		else if (y < rTrans.parent.parent.parent.transform.position.y - 77.5f)
+				y = -77.5f;
+		else
+				y -= rTrans.parent.transform.position.y;
 
-		if (startPos.Equals(Vector3.zero))
-			startPos = rTrans.position;
+		if (startPos.Equals (Vector3.zero)) {
+						startPos = rTrans.position;
+			Debug.Log(startPos.ToString());
+				}
 
-		rTrans.position = new Vector3(rTrans.position.x, y, rTrans.position.z);
+		rTrans.localPosition = new Vector3(rTrans.localPosition.x, y, rTrans.localPosition.z);
 	}
 
 	public void OnDrop(RectTransform rTrans)	{
 		float y = Input.mousePosition.y;
 
-		if (y > 212 + 77.5f - 38.75) {
-			y = 212 + 77.5f;
+		if (y > rTrans.parent.parent.parent.transform.position.y + 77.5f - 38.75) {
+			y = 77.5f;
 		} 
-		else if (y < 212 - 77.5f + 38.75) {
-			y = 212 - 77.5f;
-
+		else if (y < rTrans.parent.parent.parent.transform.position.y - 77.5f + 38.75) {
+			y = -77.5f;
 		}
 		else {
-			y = 212;
+			y = 0;
 		}
 
-		if (mil.position.y == y && !rTrans.gameObject.name.Equals("Military"))
+		if (mil.localPosition.y == y && !rTrans.gameObject.name.Equals("Military"))
 			mil.position = startPos;
-		else if (spr.position.y == y && !rTrans.gameObject.name.Equals("Spiritual"))
+		else if (spr.localPosition.y == y && !rTrans.gameObject.name.Equals("Spiritual"))
 			spr.position = startPos;
-		else if (eco.position.y == y && !rTrans.gameObject.name.Equals("Economic"))
+		else if (eco.localPosition.y == y && !rTrans.gameObject.name.Equals("Economic"))
 			eco.position = startPos;
 
 		startPos = Vector3.zero;
 
-		rTrans.position = new Vector3(rTrans.position.x, y, rTrans.position.z);
+		rTrans.localPosition = new Vector3(rTrans.localPosition.x, y, rTrans.localPosition.z);
 		
 		gmil.localPosition = new Vector3 (gmil.localPosition.x, mil.localPosition.y / 2, gmil.localPosition.y);
 		gspr.localPosition = new Vector3 (gspr.localPosition.x, spr.localPosition.y / 2, gspr.localPosition.y);
 		geco.localPosition = new Vector3 (geco.localPosition.x, eco.localPosition.y / 2, geco.localPosition.y);
+	}
+
+	public void OnMainMenuButton()	{
+		Application.LoadLevel (0);
 	}
 }

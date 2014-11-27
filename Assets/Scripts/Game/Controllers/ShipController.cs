@@ -5,6 +5,7 @@ using System.Collections;
 public class ShipController : MonoBehaviour {
 	public ShipMove ship;
 
+	public Text healthText;
 	public Slider healthBar;
 
 	// Use this for initialization
@@ -50,5 +51,16 @@ public class ShipController : MonoBehaviour {
 			ship.NormalSpeed();
 		}
 
+	}
+
+	void OnTriggerEnter(Collider c)	{
+		if (c.tag.Equals ("EBlast")) {
+			healthBar.value -= 0.5f;
+			healthText.text = "HEALTH " + healthBar.value + "%";
+
+			if (healthBar.value <= 0)	{
+				GameControllerSingleton.GetInstance().GameOver();
+			}
+		}
 	}
 }

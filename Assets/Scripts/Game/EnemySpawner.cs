@@ -11,9 +11,12 @@ public class EnemySpawner : MonoBehaviour {
 
 	public Image enemyMapIcon;
 
+	public Image spawnerIconPrefab;
+	public RectTransform spawnerIcon;
+
 	// Use this for initialization
-	void Start () {
-	
+	void OnEnable () {
+		SetMapIcon ();
 	}
 	
 	// Update is called once per frame
@@ -27,7 +30,7 @@ public class EnemySpawner : MonoBehaviour {
 
 	IEnumerator spawnEnemies(int enemies)	{
 		for (int i = 0; i < enemies; i++) {
-			GameObject enemy = Instantiate (enemyPrefab, transform.position.normalized * 75.5f, enemyPrefab.transform.rotation) as GameObject;
+			GameObject enemy = Instantiate (enemyPrefab, transform.position.normalized * 75.5f, transform.rotation) as GameObject;
 			enemy.GetComponent<ShipMove>().planet = planet;
 			enemy.GetComponent<Enemy>().target = GameControllerSingleton.GetInstance().FindTarget(transform.position);
 
@@ -37,5 +40,23 @@ public class EnemySpawner : MonoBehaviour {
 
 			yield return new WaitForSeconds(0.5f);
 		}
+	}
+
+	void SetMapIcon()	{
+		spawnerIcon = (Image.Instantiate (spawnerIconPrefab) as Image).rectTransform;
+		
+		float theta = Mathf.Acos (transform.position.z / transform.position.magnitude);
+		float phi = Mathf.Atan2 (transform.position.y, transform.position.x);
+		
+		float x = 25 * Mathf.Sin (theta) * Mathf.Cos (phi);
+		float y = 25 * Mathf.Sin (theta) * Mathf.Sin (phi) + 25;
+		
+		if (transform.position.z > 0) {
+			y = -y;
+		}
+		
+		spawnerIcon.parent = GameObject.Find ("Mini Map").transform;
+		
+		spawnerIcon.localPosition = new Vector3 (x, y, spawnerIcon.localPosition.z);
 	}
 }

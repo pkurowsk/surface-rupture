@@ -80,6 +80,7 @@ public class ShipMove : MonoBehaviour {
 			lastShot = Time.time;
 
 			Instantiate(hBlast, transform.position, GetFireAngle(x, y));
+			GameControllerSingleton.GetInstance().IncShotsFired();
 		}
 	}
 
@@ -88,6 +89,7 @@ public class ShipMove : MonoBehaviour {
 			lastShot = Time.time;
 					
 			Instantiate(vBlast, transform.position, GetFireAngle(x, y));
+			GameControllerSingleton.GetInstance().IncShotsFired();
 		}
 	}
 
