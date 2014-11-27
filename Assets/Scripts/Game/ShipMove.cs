@@ -21,8 +21,6 @@ public class ShipMove : MonoBehaviour {
 	[Range(0, 1000f)]
 	public float turnSpeed = 200f;
 
-	public GameController gameController;
-
 	public int targetLayer = 0;
 
 	public RectTransform shipMapIcon;
@@ -37,19 +35,18 @@ public class ShipMove : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-		gameController = GameObject.FindGameObjectWithTag("GameController").GetComponent<GameController>();
 		lastShot = Time.time;
 	}
 	
 	// Update is called once per frame
 	void FixedUpdate () {
-		if (gameController.GetGameState () != GameController.GameStates.PLAYING)
+		if (GameControllerSingleton.GetInstance().GetGameState() != GameController.GameStates.PLAYING)
 			return;
 
 		transform.RotateAround(planet.position, transform.right, Time.fixedDeltaTime * moveSpeed);
 
 		if (isLerping) {
-			targetPosition = transform.position.normalized * gameController.distances[targetLayer];
+			targetPosition = transform.position.normalized * GameControllerSingleton.GetInstance().distances[targetLayer];
 			transform.position = Vector3.Lerp(transform.position, targetPosition, moveSpeed / 2 * Time.fixedDeltaTime);
 
 			if (Vector3.Distance(transform.position, targetPosition) <= 0.1f)
@@ -79,7 +76,7 @@ public class ShipMove : MonoBehaviour {
 	}
 
 	public void FireH(float x, float y)	{
-		if (Time.time - lastShot > fireRate && gameController.GetGameState() == GameController.GameStates.PLAYING) {
+		if (Time.time - lastShot > fireRate && GameControllerSingleton.GetInstance().GetGameState() == GameController.GameStates.PLAYING) {
 			lastShot = Time.time;
 
 			Instantiate(hBlast, transform.position, GetFireAngle(x, y));
@@ -87,7 +84,7 @@ public class ShipMove : MonoBehaviour {
 	}
 
 	public void FireV(float x, float y)	{
-		if (Time.time - lastShot > fireRate && gameController.GetGameState() == GameController.GameStates.PLAYING) {
+		if (Time.time - lastShot > fireRate && GameControllerSingleton.GetInstance().GetGameState() == GameController.GameStates.PLAYING) {
 			lastShot = Time.time;
 					
 			Instantiate(vBlast, transform.position, GetFireAngle(x, y));
@@ -95,7 +92,7 @@ public class ShipMove : MonoBehaviour {
 	}
 
 	public void LayerDown()	{
-		if (isLerping || gameController.GetGameState() != GameController.GameStates.PLAYING)
+		if (isLerping || GameControllerSingleton.GetInstance().GetGameState() != GameController.GameStates.PLAYING)
 			return;
 		
 		targetLayer = targetLayer <= 0 ? 0 : targetLayer - 1;
@@ -103,7 +100,7 @@ public class ShipMove : MonoBehaviour {
 	}
 
 	public void LayerUp()	{
-		if (isLerping || gameController.GetGameState() != GameController.GameStates.PLAYING)
+		if (isLerping || GameControllerSingleton.GetInstance().GetGameState() != GameController.GameStates.PLAYING)
 			return;
 
 		targetLayer = targetLayer >= 2 ? 2 : targetLayer + 1;
@@ -121,7 +118,7 @@ public class ShipMove : MonoBehaviour {
 	}
 
 	public void TiltSideWays(int direction)	{
-		if (gameController.GetGameState() == GameController.GameStates.PLAYING)
+		if (GameControllerSingleton.GetInstance().GetGameState() == GameController.GameStates.PLAYING)
 			transform.RotateAround (transform.position, transform.forward, Time.fixedDeltaTime * turnSpeed * direction);
 	}
 

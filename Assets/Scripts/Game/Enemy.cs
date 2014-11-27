@@ -4,9 +4,6 @@ using System.Collections;
 public class Enemy : MonoBehaviour {
 	public Transform target;
 
-	public Transform leftGun;
-	public Transform rightGun;
-
 	public ShipMove ship;
 
 	public GameObject blastPrefab;
@@ -26,16 +23,35 @@ public class Enemy : MonoBehaviour {
 	
 	// Update is called once per frame
 	void FixedUpdate () {
-		float dot = Vector3.Dot (-transform.right, target.position - transform.position);
+		if (target == null)
+			target = GameControllerSingleton.GetInstance().FindTarget(transform.position);
+		if (target == null)
+			return;
 
-		if (dot < 0)
-			ship.TiltSideWays (1);
-		else if (dot > 0)
+		float dot = Vector3.Dot(transform.right, transform.position - target.position);
+		if (dot > 0.1) {
 			ship.TiltSideWays (-1);
+		}
+		else if (dot < -0.1) {
+			ship.TiltSideWays (1);
+		}
 
-
-		if (Vector3.Distance (transform.position, target.position) < attackDist)
+		if (Vector3.Distance (transform.position, target.position) < attackDist) {
 			Fire ();
+			ship.Brake ();
+		}
+		else {
+			ship.NormalSpeed();
+		}
+	}
+
+	Vector3 GetTurnAngle()	{
+		// Plane defined by (normal to plane) forward and position 
+		Vector3 toTarget = target.position - transform.position;
+		float dist = Vector3.Dot (toTarget, transform.position.normalized);
+		Vector3 planePoint = target.position - dist * transform.position.normalized;
+
+		return (planePoint - transform.position);
 	}
 
 	void Fire()	{
@@ -43,13 +59,9 @@ public class Enemy : MonoBehaviour {
 			lastShot = Time.time;
 
 			GameObject b = Instantiate (blastPrefab, transform.position - transform.up * 5f, transform.rotation) as GameObject;
-			b.rigidbody.AddForce ((target.position - transform.position).normalized * 10000f);
+			b.rigidbody.AddForce ((target.position - b.transform.position).normalized * 10000f);
 			Destroy (b.gameObject, 1.5f);
 		}
-	}
-
-	public void SetTarget()	{
-
 	}
 
 	void OnTriggerEnter(Collider c)	{

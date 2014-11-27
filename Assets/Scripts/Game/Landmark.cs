@@ -2,8 +2,6 @@
 using System.Collections;
 
 public class Landmark : MonoBehaviour {
-	public GameController gameController;
-
 	[Range(0, 100)]
 	public int health = 100;
 
@@ -14,16 +12,19 @@ public class Landmark : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-	
+		
 	}
 
 	void OnTriggerEnter(Collider c)	{
 		if (c.tag.Equals ("EBlast")) {
+			Destroy(c.transform.parent.gameObject);
 			Debug.Log ("Hit");
 			health--;
 			depleted++;
 			if (depleted >= tierSize)	{
-				gameController.LandmarkTierDown(type);
+				Debug.Log("BOOM Tier down");
+
+				GameControllerSingleton.GetInstance().LandmarkTierDown(type);
 				depleted = 0;
 
 				if (health < tierSize)

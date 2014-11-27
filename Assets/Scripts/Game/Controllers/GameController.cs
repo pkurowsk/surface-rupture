@@ -15,7 +15,7 @@ public class GameController : MonoBehaviour {
 		INTRO,
 		GAMEOVER
 	};
-
+	
 	public GameObject gameHUD;
 	public GameObject storyUI;
 	public GameObject pauseUI;
@@ -53,8 +53,23 @@ public class GameController : MonoBehaviour {
 		icon.SetParent (miniMap);
 	}
 
+	public Transform FindTarget(Vector3 position)	{
+		if (landmarks.childCount == 0) {
+			GameOver();
+			return null;
+		}
+		Transform closest = landmarks.GetChild (0);
+		for (int i = 1; i < landmarks.childCount; i++) {
+			if (Vector3.Distance(position, closest.position) > Vector3.Distance(position, landmarks.GetChild(i).position))
+				closest = landmarks.GetChild(i);
+		}
+		
+		return closest;
+	}
+
+
 	IEnumerator FirstWave()	{
-		yield return new WaitForSeconds (2f);
+		yield return new WaitForSeconds (5f);
 		NextWave ();
 	}
 
