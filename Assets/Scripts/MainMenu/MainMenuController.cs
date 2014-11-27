@@ -1,9 +1,12 @@
 ﻿using UnityEngine;
+using UnityEngine.UI;
 using System.Collections;
 
 public class MainMenuController : MonoBehaviour {
 	public Transform main;
 	public Transform levelSelect;
+
+	public Text scores;
 
 	Vector3 targetMain;
 	Vector3 targetLvlSel;
@@ -16,6 +19,22 @@ public class MainMenuController : MonoBehaviour {
 	void Start () {
 		targetMain = new Vector3 (-levelSelect.position.x, 0, 0);
 		targetLvlSel = Vector3.zero;
+
+		if (!PlayerPrefs.HasKey ("scores")) {
+			PlayerPrefs.SetString ("scores", "0 0 0 0 0 0 0 0 0 0");
+			PlayerPrefs.Save();
+		}
+
+		// Load scores
+		string []scoresString = PlayerPrefs.GetString ("scores").Split (' ');
+
+		scores.text = "";
+		for (int i = 0; i < 10; i++)	{
+			if (i < 9)
+				scores.text += (i+1) + ".\t\t\t" + scoresString [i] + "\n";
+			else 
+				scores.text += (i+1) + ".\t\t" + scoresString [i] + "\n";
+		}
 	}
 	
 	// Update is called once per frame

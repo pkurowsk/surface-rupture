@@ -9,6 +9,8 @@ public class EnemySpawner : MonoBehaviour {
 
 	public Transform planet;
 
+	public Transform enemiesHolder;
+
 	public Image enemyMapIcon;
 
 	public Image spawnerIconPrefab;
@@ -25,7 +27,7 @@ public class EnemySpawner : MonoBehaviour {
 	}
 
 	public void spawnWave(int waveNum)	{
-		StartCoroutine(spawnEnemies (10));
+		StartCoroutine(spawnEnemies ((int)(50 * (waveNum / 20f))));
 	}
 
 	IEnumerator spawnEnemies(int enemies)	{
@@ -37,6 +39,8 @@ public class EnemySpawner : MonoBehaviour {
 			enemy.GetComponent<ShipMove>().shipMapIcon = (Image.Instantiate(enemyMapIcon) as Image).rectTransform;
 			if (enemy.GetComponent<ShipMove>().shipMapIcon != null)
 				GameControllerSingleton.GetInstance().AddToMiniMap(enemy.GetComponent<ShipMove>().shipMapIcon.transform);
+
+			enemy.transform.parent = enemiesHolder;
 
 			yield return new WaitForSeconds(0.5f);
 		}

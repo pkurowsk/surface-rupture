@@ -2,8 +2,6 @@
 using System.Collections;
 
 public class Enemy : MonoBehaviour {
-
-
 	public Transform target;
 
 	public ShipMove ship;
@@ -31,21 +29,38 @@ public class Enemy : MonoBehaviour {
 
 		// Moving
 		float dot = Vector3.Dot(transform.right, transform.position - target.position);
-		if (dot > 0.1) {
+		if (dot > 0.2) {
 			ship.TiltSideWays (-1);
 		}
-		else if (dot < -0.1) {
+		else if (dot < -0.2) {
 			ship.TiltSideWays (1);
 		}
 
 		// Actions
-		if (Vector3.Distance (GameControllerSingleton.GetInstance ().player.position, transform.position) <= attackDist * 2) {
-			if (Vector3.Dot(transform.right, GameControllerSingleton.GetInstance().player.right) > 0)
+		if (Vector3.Distance (GameControllerSingleton.GetInstance ().player.position, transform.position) <= attackDist) {
+			if (Vector3.Dot(transform.right, GameControllerSingleton.GetInstance().player.right) > 0)	{
 				target = GameControllerSingleton.GetInstance().oppositePlayer;
-			else
+
+				// Switch layers
+				if (GameControllerSingleton.GetInstance().player.GetComponent<ShipMove>().targetLayer == ship.targetLayer)	{
+					ship.LayerUp();
+				}
+				if (GameControllerSingleton.GetInstance().player.GetComponent<ShipMove>().targetLayer == ship.targetLayer)	{
+					ship.LayerDown();
+				}
+			}
+			else {
 				target = GameControllerSingleton.GetInstance().player;
 
-			ship.Accelerate();
+				// Get on player's layer
+				int layerDiff = GameControllerSingleton.GetInstance().player.GetComponent<ShipMove>().targetLayer - ship.targetLayer;
+				if (layerDiff > 0)
+					ship.LayerUp();
+				else if (layerDiff < 0)
+					ship.LayerDown();
+			
+				ship.Accelerate();
+			}
 		}
 		else {
 			ship.NormalSpeed();
@@ -86,6 +101,7 @@ public class Enemy : MonoBehaviour {
 			GameControllerSingleton.GetInstance().IncShotsHits();
 			health--;
 			if (health == 0)	{
+				GameControllerSingleton.GetInstance().CheckEndOfWave();
 				if (ship.shipMapIcon != null)
 					Destroy(ship.shipMapIcon.gameObject);
 				Destroy(gameObject);

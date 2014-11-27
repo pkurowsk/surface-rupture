@@ -18,6 +18,8 @@ public class GameController : MonoBehaviour {
 
 	public Transform player;
 	public Transform oppositePlayer;
+
+	public Transform enemies;
 	
 	public GameObject gameHUD;
 	public GameObject storyUI;
@@ -30,6 +32,7 @@ public class GameController : MonoBehaviour {
 	public Text moraleLostText;
 	public Text wavesText;
 	public Text deathText;
+	public Text wavesUIText;
 
 	public Text landmarkStatusPrefab;
 
@@ -61,14 +64,15 @@ public class GameController : MonoBehaviour {
 	void Start () {
 		gameState = GameStates.INTRO;
 	}
-	
-	// Update is called once per frame
-	void Update () {
-		
-	}
 
 	public void AddToMiniMap(Transform icon)	{
 		icon.SetParent (miniMap);
+	}
+
+	public void CheckEndOfWave()	{
+		if (enemies.childCount == 1) {
+			StartCoroutine(NextWave ());
+		}
 	}
 
 	public Transform FindTarget(Vector3 position)	{
@@ -76,6 +80,11 @@ public class GameController : MonoBehaviour {
 			GameOver();
 			return player;
 		}
+
+		if (Random.Range (0, 100) > 75) {
+			return landmarks.GetChild(Random.Range(0, landmarks.childCount - 1));
+		}
+
 		Transform closest = landmarks.GetChild (0);
 		for (int i = 1; i < landmarks.childCount; i++) {
 			if (Vector3.Distance(position, closest.position) > Vector3.Distance(position, landmarks.GetChild(i).position))
@@ -83,12 +92,6 @@ public class GameController : MonoBehaviour {
 		}
 		
 		return closest;
-	}
-
-
-	IEnumerator FirstWave()	{
-		yield return new WaitForSeconds (5f);
-		NextWave ();
 	}
 
 	/// <summary>
@@ -104,10 +107,25 @@ public class GameController : MonoBehaviour {
 		wavesText.text = "WAVES " + wave;
 
 		if (moraleBar.value == 0)
-						deathText.text = "MORALE LOST";
+			deathText.text = "MORALE LOST";
 
 		gameOverUI.SetActive (true);
 		gameHUD.SetActive (false);
+
+		string[] scores = PlayerPrefs.GetString ("scores").Split(' ');
+		ArrayList list = new ArrayList ();
+		list.Add (wave);
+		for (int i = 0; i < 10; i++) {
+			list.Add (int.Parse (scores [i]));
+		}
+		list.Sort ();
+
+		string scoreString = "";
+		for (int i = 10; i >= 1; i--)
+			scoreString += list [i] + " ";
+
+		PlayerPrefs.SetString ("scores", scoreString.Trim());
+		PlayerPrefs.Save ();
 	}
 
 	public GameStates GetGameState()	{
@@ -136,12 +154,17 @@ public class GameController : MonoBehaviour {
 		return landmarkStatus;
 	}
 
-	public void NextWave()	{
+	IEnumerator NextWave()	{
+		yield return new WaitForSeconds (5f);
 		if (wave % waveBreak == 0 && wave != 0) {
 			HelpWave();
 		}
 
 		wave++;
+		GameOver ();
+		wavesUIText.text = "WAVE " + wave;
+		wavesUIText.gameObject.GetComponent<Animator>().Play ("NewWave");
+		yield return new WaitForSeconds (1f);
 
 		for (int i = 0; i < eSpawners.childCount; i++) {
 			eSpawners.GetChild(i).GetComponent<EnemySpawner>().spawnWave(wave);
@@ -162,6 +185,9 @@ public class GameController : MonoBehaviour {
 			moraleBar.value = moraleBar.value - moraleValues[2];
 			moraleLost += moraleValues[2];
 		}
+
+		if (moraleBar.value == 0)
+			GameOver ();
 	}
 
 	void HelpWave()	{
@@ -180,6 +206,6 @@ public class GameController : MonoBehaviour {
 		landmarks.gameObject.SetActive (true);
 		eSpawners.gameObject.SetActive (true);
 
-		StartCoroutine (FirstWave ());
+		StartCoroutine(NextWave ());
 	}
 }
