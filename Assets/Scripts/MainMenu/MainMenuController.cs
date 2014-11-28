@@ -6,6 +6,9 @@ public class MainMenuController : MonoBehaviour {
 	public Transform main;
 	public Transform levelSelect;
 
+	public RectTransform mainTitle;
+	public RectTransform lvlTitle;
+
 	public Text scores;
 
 	Vector3 targetMain;
@@ -17,6 +20,9 @@ public class MainMenuController : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
+		mainTitle.position = new Vector3 (mainTitle.position.x, Screen.height - mainTitle.rect.height / 2 - 10f, mainTitle.position.z);
+		lvlTitle.position = new Vector3 (lvlTitle.position.x, Screen.height - lvlTitle.rect.height / 2 - 10f, lvlTitle.position.z);
+
 		targetMain = new Vector3 (-levelSelect.position.x, 0, 0);
 		targetLvlSel = Vector3.zero;
 

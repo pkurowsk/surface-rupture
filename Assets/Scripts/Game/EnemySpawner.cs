@@ -23,7 +23,7 @@ public class EnemySpawner : MonoBehaviour {
 	
 	// Update is called once per frame
 	void FixedUpdate () {
-		warpHole.Rotate(warpHole.up, Time.fixedDeltaTime * -0.5f);
+
 	}
 
 	public void spawnWave(int waveNum)	{

@@ -34,6 +34,8 @@ public class GameController : MonoBehaviour {
 	public Text deathText;
 	public Text wavesUIText;
 
+	public Text bonusText;
+
 	public Text landmarkStatusPrefab;
 
 	public Transform miniMap;
@@ -44,6 +46,8 @@ public class GameController : MonoBehaviour {
 	
 	public Transform landmarks;
 	public Transform eSpawners;
+
+	public GameObject[] turrets;
 
 	public LandmarkType[] planetRanking;
 	public int[] moraleValues;
@@ -149,7 +153,7 @@ public class GameController : MonoBehaviour {
 
 		Transform statuses = GameObject.Find ("Landmark Statuses").transform;
 		landmarkStatus.rectTransform.parent = statuses;
-		landmarkStatus.rectTransform.localPosition = new Vector3 (0, 6 - 8 * (statuses.childCount - 1), landmarkStatus.rectTransform.localPosition.z);
+		landmarkStatus.rectTransform.localPosition = new Vector3 (5, 6 - 10 * (statuses.childCount - 1), landmarkStatus.rectTransform.localPosition.z);
 
 		return landmarkStatus;
 	}
@@ -157,11 +161,13 @@ public class GameController : MonoBehaviour {
 	IEnumerator NextWave()	{
 		yield return new WaitForSeconds (5f);
 		if (wave % waveBreak == 0 && wave != 0) {
+			bonusText.gameObject.SetActive(true);
 			HelpWave();
+			yield return new WaitForSeconds (5f);
+			bonusText.gameObject.SetActive(false);
 		}
 
 		wave++;
-		GameOver ();
 		wavesUIText.text = "WAVE " + wave;
 		wavesUIText.gameObject.GetComponent<Animator>().Play ("NewWave");
 		yield return new WaitForSeconds (1f);
@@ -191,7 +197,32 @@ public class GameController : MonoBehaviour {
 	}
 
 	void HelpWave()	{
-		Debug.Log ("Help");
+		if (planetRanking [0] == LandmarkType.Military) {
+			bonusText.gameObject.SetActive(false);
+			for (int i = 0; i < turrets.Length; i++)	{
+				if (!turrets[i].activeSelf)	{
+					bonusText.text = "MILITARY BONUS\n NEW TURRET";
+					bonusText.color = Color.red;
+					bonusText.gameObject.SetActive(true);
+					bonusText.GetComponent<Animator>().Play("PopOut");
+					turrets[i].SetActive(true);
+					break;
+				}
+			}
+		} 
+		else if (planetRanking [0] == LandmarkType.Spiritual) {
+			bonusText.text = "SPIRITUAL BONUS\n +20 HEALTH";
+			bonusText.color = Color.blue;
+			player.GetComponent<ShipController>().healthBar.value += 20;
+		}
+		else if (planetRanking [0] == LandmarkType.Economic) {
+			bonusText.text = "ECONOMIC BONUS\n LANDMARK REPAIR";
+			bonusText.color = Color.green;
+			for (int i = 0; i < landmarks.childCount; i++)	{
+				landmarks.GetChild(i).GetComponent<Landmark>().health += landmarks.GetChild(i).GetComponent<Landmark>().depleted;
+				landmarks.GetChild(i).GetComponent<Landmark>().depleted = 0;
+			}
+		}
 	}
 
 	/// <summary>

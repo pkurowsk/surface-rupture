@@ -7,7 +7,7 @@ public class Landmark : MonoBehaviour {
 	public float health = 100;
 
 	float tierSize = 33;
-	float depleted = 0;
+	public float depleted = 0;
 
 	public GameController.LandmarkType type;
 
@@ -27,7 +27,7 @@ public class Landmark : MonoBehaviour {
 
 	void FixedUpdate()	{
 		if (Time.fixedTime - sincelastAttack > 2f) {
-			landmarkStatus.text = "Landmark " + gameObject.name + ": SAFE";
+			landmarkStatus.text = "Landmark " + gameObject.name + ":\tSAFE";
 			landmarkStatus.color = Color.green;
 		}
 
@@ -36,7 +36,7 @@ public class Landmark : MonoBehaviour {
 	void OnTriggerEnter(Collider c)	{
 		if (c.tag.Equals ("EBlast")) {
 			Destroy(c.transform.parent.gameObject);
-			landmarkStatus.text = "Landmark " + gameObject.name + ": UNDER ATTACK";
+			landmarkStatus.text = "Landmark " + gameObject.name + ":\tUNDER ATTACK";
 			landmarkStatus.color = Color.red;
 
 			sincelastAttack = Time.fixedTime;
@@ -50,7 +50,7 @@ public class Landmark : MonoBehaviour {
 				depleted = 0;
 
 				if (health < tierSize)	{
-					landmarkStatus.text = "Landmark " + gameObject.name + ": DESTROYED";
+					landmarkStatus.text = "Landmark " + gameObject.name + ":\tDESTROYED";
 					landmarkStatus.color = Color.gray;
 					Destroy(landmarkIcon.gameObject);
 					Destroy(gameObject);
@@ -61,7 +61,7 @@ public class Landmark : MonoBehaviour {
 
 	void SetMapIcon()	{
 		landmarkStatus = GameControllerSingleton.GetInstance ().NewLandmarkStatus ();
-		landmarkStatus.text = "Landmark " + gameObject.name + ": SAFE";
+		landmarkStatus.text = "Landmark " + gameObject.name + ":\tSAFE";
 
 		landmarkIcon = (Image.Instantiate (landmarkIconPrefab) as Image).rectTransform;
 		landmarkIcon.transform.GetChild (0).GetComponent<Text> ().text = gameObject.name;

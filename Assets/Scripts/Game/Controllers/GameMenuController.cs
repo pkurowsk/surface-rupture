@@ -24,6 +24,7 @@ public class GameMenuController : MonoBehaviour {
 		healthSlider.position = new Vector3 (healthSlider.position.x, Screen.height - healthSlider.rect.height / 2, healthSlider.position.z);
 		moraleSlider.position = new Vector3 (Screen.width - moraleSlider.rect.width / 2 - 30f, moraleSlider.position.y, moraleSlider.position.z);
 		miniMap.position = new Vector3(30, Screen.height - miniMap.rect.height / 2, miniMap.position.z);
+		gameFeed.position = new Vector3 (Screen.width - gameFeed.rect.width / 2, Screen.height - gameFeed.rect.height / 2, gameFeed.position.z);
 	}
 
 	public void OnDrag(RectTransform rTrans)	{
