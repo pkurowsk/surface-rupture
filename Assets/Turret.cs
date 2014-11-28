@@ -51,7 +51,7 @@ public class Turret : MonoBehaviour {
 			lastShot = Time.time;
 			
 			GameObject b = Instantiate (blastPrefab, transform.position + transform.up * 2f, transform.rotation) as GameObject;
-			b.rigidbody.AddForce ((target.position - b.transform.position).normalized * 2500f);
+			b.rigidbody.AddForce ((target.position - b.transform.position).normalized * 5000f);
 			Destroy (b.gameObject, 1.5f);
 		}
 	}

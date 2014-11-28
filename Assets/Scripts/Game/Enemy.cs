@@ -91,13 +91,14 @@ public class Enemy : MonoBehaviour {
 			lastShot = Time.time;
 
 			GameObject b = Instantiate (blastPrefab, transform.position - transform.up * 5f, transform.rotation) as GameObject;
-			b.rigidbody.AddForce ((target.position - b.transform.position).normalized * 10000f);
+			b.rigidbody.AddForce ((target.position - b.transform.position).normalized * 2500f);
 			Destroy (b.gameObject, 1.5f);
 		}
 	}
 
 	void OnTriggerEnter(Collider c)	{
 		if (c.tag.Equals ("PBlast")) {
+			Destroy(c.gameObject);
 			GameControllerSingleton.GetInstance().IncShotsHits();
 			health--;
 			if (health == 0)	{

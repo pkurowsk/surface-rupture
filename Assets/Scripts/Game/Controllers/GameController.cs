@@ -102,6 +102,9 @@ public class GameController : MonoBehaviour {
 	/// Ends the game.
 	/// </summary>
 	public void GameOver()	{
+		if (gameState == GameStates.GAMEOVER)
+			return;
+
 		gameState = GameStates.GAMEOVER;
 
 		shotsFiredText.text = "" + shotsFired;

@@ -55,8 +55,11 @@ public class ShipController : MonoBehaviour {
 
 	void OnTriggerEnter(Collider c)	{
 		if (c.tag.Equals ("EBlast")) {
-			healthBar.value -= 0.5f;
+			Destroy(c.gameObject);
+
+			healthBar.value -= 0.75f;
 			healthText.text = "HEALTH " + healthBar.value + "%";
+			GameControllerSingleton.GetInstance().IncHealthLost();
 
 			if (healthBar.value <= 0)	{
 				GameControllerSingleton.GetInstance().GameOver();
