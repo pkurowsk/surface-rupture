@@ -9,6 +9,8 @@ public class MainMenuController : MonoBehaviour {
 	public RectTransform mainTitle;
 	public RectTransform lvlTitle;
 
+	public GameObject planets;
+
 	public Text scores;
 
 	Vector3 targetMain;
@@ -48,12 +50,14 @@ public class MainMenuController : MonoBehaviour {
 		if (isTransition) {
 			main.localPosition = Vector3.Lerp(main.localPosition, targetMain, Time.deltaTime * 10);
 			levelSelect.localPosition = Vector3.Lerp(levelSelect.localPosition, targetLvlSel, Time.deltaTime * 10f);
+			planets.transform.localPosition = Vector3.Lerp(planets.transform.localPosition, targetLvlSel, Time.deltaTime * 15f);
 
 			if (Vector3.Distance(main.localPosition, targetMain) <= 0.01)	{
 				isTransition = false;
 
 				main.localPosition = targetMain;
 				levelSelect.localPosition = targetLvlSel;
+				planets.transform.localPosition = targetLvlSel;
 			}
 		}
 	}
@@ -64,6 +68,8 @@ public class MainMenuController : MonoBehaviour {
 
 		targetLvlSel = new Vector3(-main.position.x, 0, 0);
 		targetMain = Vector3.zero;
+
+		planets.SetActive (false);
 	}
 
 	public void OnLevelSelectPress()	{
@@ -72,6 +78,8 @@ public class MainMenuController : MonoBehaviour {
 
 		targetMain = new Vector3 (-levelSelect.position.x, 0, 0);
 		targetLvlSel = Vector3.zero;
+
+		planets.SetActive (true);
 	}
 
 	public void OnQuitPress()	{
@@ -79,6 +87,7 @@ public class MainMenuController : MonoBehaviour {
 	}
 
 	public void OnStartPress()	{
-		Application.LoadLevel(1);
+		if (GameControllerSingleton.planet != null)
+			Application.LoadLevel(1);
 	}
 }

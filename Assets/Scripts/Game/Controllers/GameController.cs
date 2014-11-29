@@ -67,6 +67,10 @@ public class GameController : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		gameState = GameStates.INTRO;
+		GameObject.Find ("Planet").transform.GetChild (0).GetComponentInChildren<MeshRenderer> ().material = GameControllerSingleton.planet.material;
+
+		planetRanking = GameControllerSingleton.planet.planetRanking;
+		moraleValues = GameControllerSingleton.planet.moraleValues;
 	}
 
 	public void AddToMiniMap(Transform icon)	{

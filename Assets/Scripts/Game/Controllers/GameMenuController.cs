@@ -16,11 +16,16 @@ public class GameMenuController : MonoBehaviour {
 	public RectTransform moraleSlider;
 	public RectTransform miniMap;
 	public RectTransform gameFeed;
-	public RectTransform waveText;
+
+	public Text planetName;
+	public Text planetStory;
 
 	Vector3 startPos = Vector3.zero;
 
 	void Start () {
+		planetName.text = GameControllerSingleton.planet.planetName;
+		planetStory.text = GameControllerSingleton.planet.planetStory;
+
 		healthSlider.position = new Vector3 (healthSlider.position.x, Screen.height - healthSlider.rect.height / 2, healthSlider.position.z);
 		moraleSlider.position = new Vector3 (Screen.width - moraleSlider.rect.width / 2 - 30f, moraleSlider.position.y, moraleSlider.position.z);
 		miniMap.position = new Vector3(30, Screen.height - miniMap.rect.height / 2, miniMap.position.z);
