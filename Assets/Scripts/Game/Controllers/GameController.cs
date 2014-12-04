@@ -62,7 +62,7 @@ public class GameController : MonoBehaviour {
 	int moraleLost = 0;
 
 	// The number of waves it takes to get power ups
-	const int waveBreak = 10;
+	const int waveBreak = 5;
 
 	// Use this for initialization
 	void Start () {

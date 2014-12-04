@@ -44,8 +44,7 @@ public class GameMenuController : MonoBehaviour {
 
 		if (startPos.Equals (Vector3.zero)) {
 						startPos = rTrans.position;
-			Debug.Log(startPos.ToString());
-				}
+		}
 
 		rTrans.localPosition = new Vector3(rTrans.localPosition.x, y, rTrans.localPosition.z);
 	}

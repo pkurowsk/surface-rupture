@@ -69,7 +69,9 @@ public class MainMenuController : MonoBehaviour {
 		targetLvlSel = new Vector3(-main.position.x, 0, 0);
 		targetMain = Vector3.zero;
 
-		planets.SetActive (false);
+		for (int i = 0; i < planets.transform.childCount; i++) 
+			planets.transform.GetChild(i).GetComponentInChildren<Animator>().enabled = false;
+		GameControllerSingleton.planet = null;
 	}
 
 	public void OnLevelSelectPress()	{

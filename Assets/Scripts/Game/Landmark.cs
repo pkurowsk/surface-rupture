@@ -17,16 +17,16 @@ public class Landmark : MonoBehaviour {
 
 	Text landmarkStatus;
 
-	float sincelastAttack = 0;
+	float sinceLastAttack = 0;
 
 	// Use this for initialization
 	void OnEnable () {
 		SetMapIcon ();
-		sincelastAttack = Time.fixedTime;
+		sinceLastAttack = Time.fixedTime;
 	}
 
 	void FixedUpdate()	{
-		if (Time.fixedTime - sincelastAttack > 2f) {
+		if (Time.fixedTime - sinceLastAttack > 2f) {
 			landmarkStatus.text = "Landmark " + gameObject.name + ":\tSAFE";
 			landmarkStatus.color = Color.green;
 		}
@@ -36,20 +36,21 @@ public class Landmark : MonoBehaviour {
 	void OnTriggerEnter(Collider c)	{
 		if (c.tag.Equals ("EBlast")) {
 			Destroy(c.transform.parent.gameObject);
-			landmarkStatus.text = "Landmark " + gameObject.name + ":\tUNDER ATTACK";
-			landmarkStatus.color = Color.red;
+			if (health > 0)	{
+				landmarkStatus.text = "Landmark " + gameObject.name + ":\tUNDER ATTACK";
+				landmarkStatus.color = Color.red;
+			}
 
-			sincelastAttack = Time.fixedTime;
+			sinceLastAttack = Time.fixedTime;
 
 			health -= 0.25f;
 			depleted += 0.25f;
 			if (depleted >= tierSize)	{
-				Debug.Log("BOOM Tier down");
-
 				GameControllerSingleton.GetInstance().LandmarkTierDown(type);
 				depleted = 0;
 
 				if (health < tierSize)	{
+					health = 0;
 					landmarkStatus.text = "Landmark " + gameObject.name + ":\tDESTROYED";
 					landmarkStatus.color = Color.gray;
 					Destroy(landmarkIcon.gameObject);
